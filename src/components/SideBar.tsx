@@ -8,7 +8,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 
-const Sidebar: React.FC = () => {
+const Sidebar = () => {
   return (
     <div
       className="bg-blue-600 min-h-screen p-4 flex-shrink-0 pr-10"

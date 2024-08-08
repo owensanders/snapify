@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 
-const Register: React.FC = () => {
+const Register = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     console.log("Registered!");

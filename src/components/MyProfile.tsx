@@ -2,7 +2,7 @@ import Sidebar from "./SideBar";
 import Button from "./ui/Button";
 import Input from "./ui/Input";
 
-const MyProfile: React.FC = () => {
+const MyProfile = () => {
   return (
     <div className="flex min-h-screen">
       <Sidebar />

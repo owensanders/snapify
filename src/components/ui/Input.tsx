@@ -1,6 +1,6 @@
 import { InputProps } from "../../interfaces/props/InputProps";
 
-const Input: React.FC<InputProps> = ({ label, id, classes, ...props }) => {
+const Input = ({ label, id, classes, ...props }: InputProps) => {
   return (
     <div className={classes}>
       <label

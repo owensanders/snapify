@@ -1,6 +1,6 @@
 import Sidebar from "./SideBar";
 
-const MyPosts: React.FC = () => {
+const MyPosts = () => {
   return (
     <div className="flex min-h-screen">
       <Sidebar />

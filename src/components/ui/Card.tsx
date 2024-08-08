@@ -1,6 +1,6 @@
 import { CardProps } from "../../interfaces/props/CardProps";
 
-const Card: React.FC<CardProps> = ({ count, title, className }) => {
+const Card = ({ count, title, className }: CardProps) => {
   return (
     <div
       className={`border w-1/3 rounded-md p-4 shadow-md bg-blue-400 ${

@@ -2,7 +2,7 @@ import { faComment, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PostProps } from "../../interfaces/props/PostProps";
 
-const Post: React.FC<PostProps> = ({ title, body, likes, comments }) => {
+const Post = ({ title, body, likes, comments }: PostProps) => {
   return (
     <div className="border rounded-md p-4 shadow-md">
       <h1 className="text-lg font-bold">{title}</h1>

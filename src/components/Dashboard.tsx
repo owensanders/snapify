@@ -2,7 +2,7 @@ import Sidebar from "./SideBar";
 import Card from "./ui/Card";
 import Post from "./ui/Post";
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
   return (
     <div className="flex min-h-screen">
       <Sidebar />

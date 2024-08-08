@@ -1,7 +1,7 @@
 import { Link, Outlet } from "react-router-dom";
 import "./App.css";
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <div>
       <nav className="w-full bg-blue-600 h-14 flex justify-between items-center px-4">
