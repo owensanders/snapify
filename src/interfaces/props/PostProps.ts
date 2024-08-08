@@ -3,4 +3,5 @@ export interface PostProps {
   body: string;
   likes: number;
   comments: number;
+  classes?: string;
 }

@@ -1,4 +1,4 @@
-import Sidebar from "./SideBar";
+import Sidebar from "./ui/SideBar";
 import Button from "./ui/Button";
 import Input from "./ui/Input";
 

@@ -4,4 +4,5 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   classes?: string;
   id: string;
+  showRequired?: boolean;
 }

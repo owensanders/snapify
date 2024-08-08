@@ -1,4 +1,4 @@
-import Sidebar from "./SideBar";
+import Sidebar from "./ui/SideBar";
 import Card from "./ui/Card";
 import Post from "./ui/Post";
 

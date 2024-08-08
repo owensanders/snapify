@@ -8,7 +8,6 @@ import Register from "./components/auth/Register";
 import Dashboard from "./components/Dashboard";
 import MyPosts from "./components/MyPosts";
 import CreatePost from "./components/CreatePost";
-import Settings from "./components/Settings";
 import MyProfile from "./components/MyProfile";
 
 const router = createBrowserRouter([
@@ -43,10 +42,6 @@ const router = createBrowserRouter([
       {
         path: "create-post",
         element: <CreatePost />,
-      },
-      {
-        path: "settings",
-        element: <Settings />,
       },
     ],
   },
