@@ -1,4 +1,4 @@
-import { InputProps } from "../../interfaces/auth/InputProps";
+import { InputProps } from "../../interfaces/props/InputProps";
 
 const Input: React.FC<InputProps> = ({ label, id, ...props }) => {
   return (

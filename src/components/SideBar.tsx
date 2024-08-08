@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 const Sidebar: React.FC = () => {
   return (
     <div
-      className="bg-blue-600 h-screen p-4 flex-shrink-0 pr-10"
+      className="bg-blue-600 min-h-screen p-4 flex-shrink-0 pr-10"
       style={{ width: "max-content" }}
     >
       <ul className="text-white ml-2">
