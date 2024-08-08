@@ -1,6 +1,7 @@
 import { FormEvent } from "react";
 import { Link } from "react-router-dom";
-import Input from "./Input";
+import Input from "../ui/Input";
+import Button from "../ui/Button";
 
 const Login: React.FC = () => {
   const handleSubmit = (e: FormEvent) => {
@@ -32,9 +33,7 @@ const Login: React.FC = () => {
             />
           </div>
           <div className="flex flex-col md:flex-row justify-center items-center">
-            <button className="w-full md:w-auto mb-2 rounded bg-blue-600 hover:bg-blue-800 px-4 py-2 md:mr-3 text-white">
-              Login
-            </button>
+            <Button>Login</Button>
             <Link to="/register">
               <p className="text-center text-blue-600 hover:text-blue-800 cursor-pointer">
                 Don't have an account? Sign up here.

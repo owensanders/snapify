@@ -7,9 +7,6 @@ const App: React.FC = () => {
       <nav className="w-full bg-blue-600 h-14 flex justify-between items-center px-4">
         <h1 className="text-white text-3xl font-bold">Snapify</h1>
         <div className="flex space-x-7">
-          <Link to="/" className="text-white hover:text-blue-300">
-            Dashboard
-          </Link>
           <Link to="/login" className="text-white hover:text-blue-300">
             Login
           </Link>

@@ -16,7 +16,7 @@ const Sidebar: React.FC = () => {
     >
       <ul className="text-white ml-2">
         <li className="my-10">
-          <Link to="/" className="flex items-center">
+          <Link to="/dashboard" className="flex items-center">
             <FontAwesomeIcon icon={faHome} className="mr-4" />
             Dashboard
           </Link>

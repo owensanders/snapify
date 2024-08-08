@@ -1,6 +1,7 @@
 import { FormEvent } from "react";
 import { Link } from "react-router-dom";
-import Input from "./Input";
+import Input from "../ui/Input";
+import Button from "../ui/Button";
 
 const Register: React.FC = () => {
   const handleSubmit = (e: FormEvent) => {
@@ -59,9 +60,7 @@ const Register: React.FC = () => {
             />
           </div>
           <div className="flex flex-col md:flex-row justify-center items-center">
-            <button className="w-full md:w-auto mb-2 rounded bg-blue-600 hover:bg-blue-800 px-4 py-2 md:mr-3 text-white">
-              Register
-            </button>
+            <Button>Register</Button>
             <Link to="/login">
               <p className="text-center text-blue-600 hover:text-blue-800 cursor-pointer">
                 Already have an account? Login here.
