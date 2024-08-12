@@ -1,8 +1,10 @@
-import { InputHTMLAttributes } from "react";
+import { ChangeEventHandler, InputHTMLAttributes } from "react";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  classes?: string;
   id: string;
+  classes?: string;
   showRequired?: boolean;
+  value?: string;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
 }
