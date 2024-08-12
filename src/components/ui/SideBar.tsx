@@ -6,9 +6,26 @@ import {
   faPerson,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      await axios.post(
+        "http://localhost:8000/logout",
+        {},
+        { withCredentials: true }
+      );
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <div
       className="bg-blue-600 min-h-screen p-4 flex-shrink-0 pr-10"
@@ -50,10 +67,18 @@ const Sidebar = () => {
           </Link>
         </li>
         <li className="my-10">
-          <Link to="/logout" className="flex items-center">
-            <FontAwesomeIcon icon={faDoorOpen} className="mr-4 min-w-[20px]" />
-            <span className="whitespace-nowrap">Logout</span>
-          </Link>
+          <form onSubmit={handleLogout} className="flex items-center">
+            <button
+              type="submit"
+              className="flex items-center text-white focus:outline-none"
+            >
+              <FontAwesomeIcon
+                icon={faDoorOpen}
+                className="mr-4 min-w-[20px]"
+              />
+              <span className="whitespace-nowrap">Logout</span>
+            </button>
+          </form>
         </li>
       </ul>
     </div>
