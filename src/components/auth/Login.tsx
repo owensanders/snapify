@@ -5,12 +5,17 @@ import Button from "../ui/Button";
 import axios, { AxiosError } from "axios";
 import { LoginValidationErrors } from "../../interfaces/auth/LoginValidationErrors";
 import { LoginResponse } from "../../interfaces/auth/LoginResponse";
+import { LoginData } from "../../interfaces/auth/LoginData";
+import { useDispatch } from "react-redux";
+import { login } from "../../store/slices/authSlice";
+import { AppDispatch } from "../../store";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errors, setErrors] = useState<LoginValidationErrors>({});
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -20,16 +25,20 @@ const Login = () => {
       axios.defaults.withXSRFToken = true;
       await axios.get("http://localhost:8000/sanctum/csrf-cookie");
 
+      const data: LoginData = {
+        email: email,
+        password: password,
+      };
+
       const response = await axios.post<LoginResponse>(
         "http://localhost:8000/login",
-        {
-          email: email,
-          password: password,
-        }
+        data
       );
 
       if (response.status === 200) {
+        const user = response.data?.user;
         setErrors({});
+        dispatch(login({ id: user?.id, name: user?.name, email: user?.email }));
         navigate("/dashboard");
       }
     } catch (error) {

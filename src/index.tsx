@@ -9,6 +9,8 @@ import Dashboard from "./components/Dashboard";
 import MyPosts from "./components/MyPosts";
 import CreatePost from "./components/CreatePost";
 import MyProfile from "./components/MyProfile";
+import { Provider } from "react-redux";
+import store from "./store";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +55,8 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );

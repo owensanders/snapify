@@ -8,19 +8,27 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store";
+import { logout } from "../../store/slices/authSlice";
 
 const Sidebar = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const handleLogout = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await axios.post(
+      const response = await axios.post(
         "http://localhost:8000/logout",
         {},
         { withCredentials: true }
       );
-      navigate("/login");
+
+      if (response.status === 200) {
+        dispatch(logout());
+        navigate("/login");
+      }
     } catch (error) {
       console.error("Logout failed:", error);
     }
