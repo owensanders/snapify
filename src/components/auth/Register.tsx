@@ -8,6 +8,9 @@ import {
   ErrorResponse,
 } from "../../interfaces/auth/RegisterValidationErrors";
 import { RegisterData } from "../../interfaces/auth/RegisterData";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store";
+import { login } from "../../store/slices/authSlice";
 
 const Register = () => {
   const [name, setName] = useState<string>("");
@@ -16,6 +19,7 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [errors, setErrors] = useState<RegisterValidationErrors>({});
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -35,7 +39,9 @@ const Register = () => {
       const response = await axios.post("http://localhost:8000/register", data);
 
       if (response.status === 200) {
+        const user = response.data?.user;
         setErrors({});
+        dispatch(login({ id: user?.id, name: user?.name, email: user?.email }));
         navigate("/dashboard");
       }
     } catch (error) {

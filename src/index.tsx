@@ -11,6 +11,7 @@ import CreatePost from "./components/CreatePost";
 import MyProfile from "./components/MyProfile";
 import { Provider } from "react-redux";
 import store from "./store";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -19,31 +20,59 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Login />,
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "login",
-        element: <Login />,
+        element: (
+          <ProtectedRoute isGuestRoute={true}>
+            <Login />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "register",
-        element: <Register />,
+        element: (
+          <ProtectedRoute isGuestRoute={true}>
+            <Register />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "my-profile",
-        element: <MyProfile />,
+        element: (
+          <ProtectedRoute>
+            <MyProfile />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "dashboard",
-        element: <Dashboard />,
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "my-posts",
-        element: <MyPosts />,
+        element: (
+          <ProtectedRoute>
+            <MyPosts />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "create-post",
-        element: <CreatePost />,
+        element: (
+          <ProtectedRoute>
+            <CreatePost />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
