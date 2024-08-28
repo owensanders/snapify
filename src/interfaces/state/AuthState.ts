@@ -4,5 +4,6 @@ export interface AuthState {
     id: number | undefined;
     name: string | undefined;
     email: string | undefined;
+    about: string | undefined;
   };
 }

@@ -38,7 +38,14 @@ const Login = () => {
       if (response.status === 200) {
         const user = response.data?.user;
         setErrors({});
-        dispatch(login({ id: user?.id, name: user?.name, email: user?.email }));
+        dispatch(
+          login({
+            id: user?.id,
+            name: user?.name,
+            email: user?.email,
+            about: user?.about,
+          })
+        );
         navigate("/dashboard");
       }
     } catch (error) {

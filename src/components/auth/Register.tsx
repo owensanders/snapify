@@ -11,6 +11,7 @@ import { RegisterData } from "../../interfaces/auth/RegisterData";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { login } from "../../store/slices/authSlice";
+import { LoginResponse } from "../../interfaces/auth/LoginResponse";
 
 const Register = () => {
   const [name, setName] = useState<string>("");
@@ -36,12 +37,22 @@ const Register = () => {
         password_confirmation: confirmPassword,
       };
 
-      const response = await axios.post("http://localhost:8000/register", data);
+      const response = await axios.post<LoginResponse>(
+        "http://localhost:8000/register",
+        data
+      );
 
       if (response.status === 200) {
         const user = response.data?.user;
         setErrors({});
-        dispatch(login({ id: user?.id, name: user?.name, email: user?.email }));
+        dispatch(
+          login({
+            id: user?.id,
+            name: user?.name,
+            email: user?.email,
+            about: user?.about,
+          })
+        );
         navigate("/dashboard");
       }
     } catch (error) {

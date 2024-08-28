@@ -5,7 +5,7 @@ export interface User {
   about: string;
 }
 
-export interface LoginResponse {
+export interface UpdateProfileResponse {
   message: string;
   user?: User;
 }

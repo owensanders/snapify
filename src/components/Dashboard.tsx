@@ -1,14 +1,19 @@
 import Sidebar from "./ui/SideBar";
 import Card from "./ui/Card";
 import Post from "./ui/Post";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 const Dashboard = () => {
+  const user = useSelector((state: RootState) => state.auth.user);
+
   return (
     <div className="flex min-h-screen">
       <Sidebar />
       <div className="flex-g bg-gray-100 p-6">
         <div className="bg-white shadow-xl border m-6 p-6">
           <h1 className="text-3xl font-bold">Dashboard</h1>
+          <h1 className="text-xl font-bold mt-3">Welcome, {user.name}!</h1>
           <div className="flex mt-6">
             <Card count={10} title="Total Posts" />
             <Card count={100} title="Total Likes" className="ml-3" />

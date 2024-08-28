@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AuthState } from "../../interfaces/state/AuthState";
+import { User } from "../../interfaces/auth/LoginResponse";
 
 const initialState: AuthState = {
   isAuthenticated: false,
@@ -7,6 +8,7 @@ const initialState: AuthState = {
     id: undefined,
     name: undefined,
     email: undefined,
+    about: undefined,
   },
 };
 
@@ -20,6 +22,7 @@ const authSlice = createSlice({
         id: number | undefined;
         name: string | undefined;
         email: string | undefined;
+        about: string | undefined;
       }>
     ) {
       state.isAuthenticated = true;
@@ -31,11 +34,21 @@ const authSlice = createSlice({
         id: undefined,
         name: undefined,
         email: undefined,
+        about: undefined,
       };
+    },
+    updateProfile(state, action: PayloadAction<Partial<User>>) {
+      state.isAuthenticated = true;
+      state.user = {
+        ...state.user,
+        ...action.payload,
+      };
+
+      console.log(state);
     },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, updateProfile } = authSlice.actions;
 export const authReducer = authSlice.reducer;
 export default authReducer;

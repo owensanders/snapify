@@ -101,7 +101,7 @@ const CreatePost = () => {
                   onChange={(e) => setBody(e.target.value)}
                 />
               </div>
-              <div className="flex flex-col md:flex-row justify-center items-center">
+              <div className="flex flex-col md:flex-row justify-start items-center">
                 <Button type="submit" disabled={loading}>
                   {loading ? "Creating..." : "Create Post"}
                 </Button>
