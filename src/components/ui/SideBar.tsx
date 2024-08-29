@@ -2,6 +2,7 @@ import {
   faDoorOpen,
   faFile,
   faHome,
+  faList,
   faPenToSquare,
   faPerson,
 } from "@fortawesome/free-solid-svg-icons";
@@ -51,6 +52,12 @@ const Sidebar = () => {
           <Link to="/dashboard" className="flex items-center">
             <FontAwesomeIcon icon={faHome} className="mr-4 min-w-[20px]" />
             <span className="whitespace-nowrap">Dashboard</span>
+          </Link>
+        </li>
+        <li className="my-10">
+          <Link to="/my-feed" className="flex items-center">
+            <FontAwesomeIcon icon={faList} className="mr-4 min-w-[20px]" />
+            <span className="whitespace-nowrap">My Feed</span>
           </Link>
         </li>
         <li className="my-10">

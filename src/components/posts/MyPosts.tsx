@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
-import Sidebar from "./ui/SideBar";
+import Sidebar from "../ui/SideBar";
 import Post from "./Post";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { RootState } from "../store";
-import { PostType } from "../interfaces/posts/PostType";
+import { RootState } from "../../store";
+import { PostType } from "../../interfaces/posts/PostType";
 
 const MyPosts = () => {
   const [posts, setPosts] = useState<PostType[]>([]);

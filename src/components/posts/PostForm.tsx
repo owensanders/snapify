@@ -1,13 +1,13 @@
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios, { AxiosError } from "axios";
-import { CreatePostValidationErrors } from "../interfaces/posts/CreatePostValidationErrors";
-import Input from "./ui/Input";
-import Button from "./ui/Button";
-import { CreatePostData } from "../interfaces/posts/CreatePostData";
-import { CreatePostResponse } from "../interfaces/posts/CreatePostResponse";
-import Sidebar from "./ui/SideBar";
-import { PostType } from "../interfaces/posts/PostType";
+import { CreatePostValidationErrors } from "../../interfaces/posts/CreatePostValidationErrors";
+import Input from "../ui/Input";
+import Button from "../ui/Button";
+import { CreatePostData } from "../../interfaces/posts/CreatePostData";
+import { CreatePostResponse } from "../../interfaces/posts/CreatePostResponse";
+import Sidebar from "../ui/SideBar";
+import { PostType } from "../../interfaces/posts/PostType";
 
 const PostForm = ({
   post,

@@ -5,7 +5,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PostProps } from "../interfaces/props/PostProps";
+import { PostProps } from "../../interfaces/props/PostProps";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -17,6 +17,7 @@ const Post = ({
   comments,
   classes,
   onDelete,
+  onFeed,
 }: PostProps) => {
   const navigate = useNavigate();
 
@@ -39,25 +40,42 @@ const Post = ({
       <div className="flex justify-between">
         <h1 className="text-lg font-bold">{title}</h1>
         <div>
-          <button
-            className="mr-3"
-            onClick={() => navigate(`/update-post/${id}`)}
-          >
-            <FontAwesomeIcon icon={faPencil} />
-          </button>
-          <button onClick={handleDelete}>
-            <FontAwesomeIcon icon={faTrash} />
-          </button>
+          {!onFeed && (
+            <>
+              <button
+                className="mr-3"
+                onClick={() => navigate(`/update-post/${id}`)}
+              >
+                <FontAwesomeIcon icon={faPencil} />
+              </button>
+              <button onClick={handleDelete}>
+                <FontAwesomeIcon icon={faTrash} />
+              </button>
+            </>
+          )}
         </div>
       </div>
       <p>{body}</p>
       <div className="mt-3 flex">
-        <p className="mr-4">
-          {likes} <FontAwesomeIcon icon={faThumbsUp} /> Likes
-        </p>
-        <p>
-          {comments} <FontAwesomeIcon icon={faComment} /> Commments
-        </p>
+        {!onFeed ? (
+          <>
+            <p className="mr-4">
+              {likes} <FontAwesomeIcon icon={faThumbsUp} /> Likes
+            </p>
+            <p>
+              {comments} <FontAwesomeIcon icon={faComment} /> Commments
+            </p>
+          </>
+        ) : (
+          <>
+            <button className="mr-4">
+              {likes} <FontAwesomeIcon icon={faThumbsUp} /> Like
+            </button>
+            <button>
+              {comments} <FontAwesomeIcon icon={faComment} /> Commment
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

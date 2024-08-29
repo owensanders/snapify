@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import PostForm from "./PostForm";
 import { useParams } from "react-router-dom";
-import { PostType } from "../interfaces/posts/PostType";
+import { PostType } from "../../interfaces/posts/PostType";
 import axios from "axios";
-import Sidebar from "./ui/SideBar";
+import Sidebar from "../ui/SideBar";
 
 const UpdatePost = () => {
   const [post, setPost] = useState<PostType | null>(null);

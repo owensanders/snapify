@@ -6,4 +6,5 @@ export interface PostProps {
   comments: number;
   classes?: string;
   onDelete?: () => void;
+  onFeed?: boolean;
 }

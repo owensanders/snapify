@@ -6,13 +6,14 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Dashboard from "./components/Dashboard";
-import MyPosts from "./components/MyPosts";
-import CreatePost from "./components/CreatePost";
+import MyPosts from "./components/posts/MyPosts";
+import CreatePost from "./components/posts/CreatePost";
 import MyProfile from "./components/MyProfile";
 import { Provider } from "react-redux";
 import store from "./store";
+import UpdatePost from "./components/posts/UpdatePost";
 import ProtectedRoute from "./components/ProtectedRoute";
-import UpdatePost from "./components/UpdatePost";
+import MyFeed from "./components/MyFeed";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <MyProfile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "my-feed",
+        element: (
+          <ProtectedRoute>
+            <MyFeed />
           </ProtectedRoute>
         ),
       },
