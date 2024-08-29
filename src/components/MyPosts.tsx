@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Sidebar from "./ui/SideBar";
-import Post from "./ui/Post";
+import Post from "./Post";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";

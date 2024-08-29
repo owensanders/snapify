@@ -12,6 +12,7 @@ import MyProfile from "./components/MyProfile";
 import { Provider } from "react-redux";
 import store from "./store";
 import ProtectedRoute from "./components/ProtectedRoute";
+import UpdatePost from "./components/UpdatePost";
 
 const router = createBrowserRouter([
   {
@@ -71,6 +72,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <CreatePost />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "update-post/:id",
+        element: (
+          <ProtectedRoute>
+            <UpdatePost />
           </ProtectedRoute>
         ),
       },

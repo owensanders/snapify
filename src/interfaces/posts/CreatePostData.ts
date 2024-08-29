@@ -1,4 +1,5 @@
 export interface CreatePostData {
-  title: string;
-  body: string;
+  id: number | undefined;
+  title: string | undefined;
+  body: string | undefined;
 }

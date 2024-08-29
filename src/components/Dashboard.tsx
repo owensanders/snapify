@@ -1,6 +1,6 @@
 import Sidebar from "./ui/SideBar";
 import Card from "./ui/Card";
-import Post from "./ui/Post";
+import Post from "./Post";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 

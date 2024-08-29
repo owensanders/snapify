@@ -5,7 +5,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PostProps } from "../../interfaces/props/PostProps";
+import { PostProps } from "../interfaces/props/PostProps";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -39,7 +39,10 @@ const Post = ({
       <div className="flex justify-between">
         <h1 className="text-lg font-bold">{title}</h1>
         <div>
-          <button className="mr-3">
+          <button
+            className="mr-3"
+            onClick={() => navigate(`/update-post/${id}`)}
+          >
             <FontAwesomeIcon icon={faPencil} />
           </button>
           <button onClick={handleDelete}>
