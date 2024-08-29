@@ -29,6 +29,8 @@ const CreatePost = () => {
     };
 
     try {
+      axios.defaults.withCredentials = true;
+      axios.defaults.withXSRFToken = true;
       const response = await axios.post<CreatePostResponse>(
         "http://localhost:8000/posts/create",
         data
@@ -38,7 +40,7 @@ const CreatePost = () => {
         setSuccess("Post created successfully.");
         setTitle("");
         setBody("");
-        setTimeout(() => navigate("/"), 2000);
+        setTimeout(() => navigate("/my-posts"), 2000);
       }
     } catch (error) {
       const axiosError = error as AxiosError<{

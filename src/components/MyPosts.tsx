@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Sidebar from "./ui/SideBar";
 import Post from "./ui/Post";
 import axios from "axios";
@@ -10,20 +10,22 @@ const MyPosts = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
   const user = useSelector((state: RootState) => state.auth.user);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get<{ posts: PostType[] }>(
-          `http://localhost:8000/posts/user/${user.id}`
-        );
-        setPosts(response.data.posts);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      }
-    };
-
-    fetchPosts();
+  const fetchPosts = useCallback(async () => {
+    try {
+      axios.defaults.withCredentials = true;
+      axios.defaults.withXSRFToken = true;
+      const response = await axios.get<{ posts: PostType[] }>(
+        `http://localhost:8000/posts/user/${user.id}`
+      );
+      setPosts(response.data.posts);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
   }, [user.id]);
+
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
   return (
     <div className="flex min-h-screen">
@@ -35,11 +37,13 @@ const MyPosts = () => {
             posts.map((post) => (
               <Post
                 key={post.id}
+                id={post.id}
                 title={post.title}
                 body={post.body}
                 likes={post.likes || 0}
                 comments={post.comments || 0}
                 classes="mt-5"
+                onDelete={fetchPosts}
               />
             ))
           ) : (

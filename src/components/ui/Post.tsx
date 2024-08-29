@@ -1,11 +1,52 @@
-import { faComment, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+import {
+  faComment,
+  faPencil,
+  faThumbsUp,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PostProps } from "../../interfaces/props/PostProps";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const Post = ({ title, body, likes, comments, classes }: PostProps) => {
+const Post = ({
+  id,
+  title,
+  body,
+  likes,
+  comments,
+  classes,
+  onDelete,
+}: PostProps) => {
+  const navigate = useNavigate();
+
+  const handleDelete = async () => {
+    try {
+      axios.defaults.withCredentials = true;
+      axios.defaults.withXSRFToken = true;
+      const response = await axios.delete(`http://localhost:8000/posts/${id}`);
+
+      if (response.status === 200) {
+        onDelete ? onDelete() : navigate("/");
+      }
+    } catch (error) {
+      console.log("There was an error deleting a post.", error);
+    }
+  };
+
   return (
     <div className={`border rounded-md p-4 shadow-md ${classes}`}>
-      <h1 className="text-lg font-bold">{title}</h1>
+      <div className="flex justify-between">
+        <h1 className="text-lg font-bold">{title}</h1>
+        <div>
+          <button className="mr-3">
+            <FontAwesomeIcon icon={faPencil} />
+          </button>
+          <button onClick={handleDelete}>
+            <FontAwesomeIcon icon={faTrash} />
+          </button>
+        </div>
+      </div>
       <p>{body}</p>
       <div className="mt-3 flex">
         <p className="mr-4">

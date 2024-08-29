@@ -25,6 +25,7 @@ const Dashboard = () => {
                 Most Recent Post
               </h2>
               <Post
+                id={22}
                 title="My Latest Post"
                 body="Lorem ipsum, dolor sit amet consectetur adipisicing elit.
                   Minima minus maiores nisi sit. Nesciunt iusto, ut voluptatum
@@ -43,6 +44,7 @@ const Dashboard = () => {
                 Most Popular Post
               </h2>
               <Post
+                id={23}
                 title="My First Post"
                 body="Lorem ipsum, dolor sit amet consectetur adipisicing elit.
                   Minima minus maiores nisi sit. Nesciunt iusto, ut voluptatum
