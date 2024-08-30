@@ -30,7 +30,7 @@ const MyFeed = () => {
       <div className="flex-grow bg-gray-100 p-6">
         <div className="bg-white shadow-xl border m-6 p-6">
           <h1 className="text-3xl font-bold">My Feed</h1>
-          {posts.map((post) => (
+          {posts.length > 0 ? posts.map((post) => (
             <Post
               key={post.id}
               id={post.id}
@@ -41,7 +41,7 @@ const MyFeed = () => {
               classes="mt-10"
               onFeed={true}
             />
-          ))}
+          )) : <p className='mt-10'>No posts available.</p>}
         </div>
       </div>
     </div>
