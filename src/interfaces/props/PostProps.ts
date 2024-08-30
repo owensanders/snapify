@@ -1,16 +1,18 @@
+import {CommentData} from "../posts/CommentData";
+
 export interface PostProps {
   id: number;
   title: string;
   body: string;
   likes: Like[];
-  comments: [];
+  comments: CommentData[];
   classes?: string;
   onDelete?: () => void;
   onFeed?: boolean;
   onLike?: () => void;
 }
 
-interface Like {
+export interface Like {
   id: number;
   post_id: number;
   user_id: number;

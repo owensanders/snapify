@@ -19,8 +19,8 @@ const Post = ({
   id,
   title,
   body,
-  likes,
-  comments,
+  likes = [],
+  comments = [],
   classes,
   onDelete,
   onFeed,
@@ -29,7 +29,7 @@ const Post = ({
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.auth.user);
   const [errors, setErrors] = useState<CommentValidationErrors>({});
-  const hasUserLiked = likes.some((like) => like.user_id === user.id);
+  const hasUserLiked = (likes || []).some((like) => like.user_id === user.id);
   const [comment, setComment] = useState<string>("");  // useState for comment
 
   const handleDelete = async () => {
