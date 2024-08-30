@@ -35,8 +35,8 @@ const Dashboard = () => {
                   ad aliquid temporibus exercitationem suscipit adipisci et vel
                   excepturi perferendis error repellat architecto debitis. Vitae
                   voluptatem culpa dolorum autem."
-                likes={2}
-                comments={0}
+                likes={[]}
+                comments={[]}
               />
             </div>
             <div>
@@ -54,8 +54,8 @@ const Dashboard = () => {
                   ad aliquid temporibus exercitationem suscipit adipisci et vel
                   excepturi perferendis error repellat architecto debitis. Vitae
                   voluptatem culpa dolorum autem."
-                likes={15}
-                comments={6}
+                likes={[]}
+                comments={[]}
               />
             </div>
           </div>

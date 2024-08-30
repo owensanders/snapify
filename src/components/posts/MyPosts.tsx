@@ -40,8 +40,8 @@ const MyPosts = () => {
                 id={post.id}
                 title={post.title}
                 body={post.body}
-                likes={post.likes || 0}
-                comments={post.comments || 0}
+                likes={post.likes || []}
+                comments={post.comments || []}
                 classes="mt-5"
                 onDelete={fetchPosts}
               />
