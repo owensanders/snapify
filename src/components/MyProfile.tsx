@@ -7,6 +7,8 @@ import { AppDispatch, RootState } from "../store";
 import { useApi } from "../hooks/useApi";
 import { UpdateProfileValidationErrors } from "../interfaces/my-profile/UpdateProfileValidationErrors";
 import { updateProfile } from "../store/slices/authSlice";
+import { UseApiErrorResponse } from "../interfaces/api/UseApiErrorResponse";
+import { UpdateProfileResponse } from "../interfaces/my-profile/UpdateProfileResonse";
 
 const MyProfile = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -17,7 +19,10 @@ const MyProfile = () => {
   const [errors, setErrors] = useState<UpdateProfileValidationErrors>({});
   const [success, setSuccess] = useState<string | null>(null);
 
-  const { data, loading, error, fetchData } = useApi(
+  const { data, loading, error, fetchData } = useApi<
+    UpdateProfileResponse,
+    UseApiErrorResponse
+  >(
     {
       url: "http://localhost:8000/my-profile/update",
       method: "POST",
@@ -73,15 +78,15 @@ const MyProfile = () => {
                 <ul className="mb-4 text-red-600">
                   {errors.name &&
                     errors.name.map((error, index) => (
-                      <li key={`title-error-${index}`}>{error}</li>
+                      <li key={`name-error-${index}`}>{error}</li>
                     ))}
                   {errors.email &&
                     errors.email.map((error, index) => (
-                      <li key={`body-error-${index}`}>{error}</li>
+                      <li key={`email-error-${index}`}>{error}</li>
                     ))}
                   {errors.about &&
                     errors.about.map((error, index) => (
-                      <li key={`body-error-${index}`}>{error}</li>
+                      <li key={`about-error-${index}`}>{error}</li>
                     ))}
                 </ul>
               )}

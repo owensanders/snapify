@@ -1,4 +1,4 @@
-export interface UseApiOptions {
+export interface UseApiOptions<T = any> {
   manual?: boolean;
-  initialData?: any;
+  initialData?: T | null;
 }
