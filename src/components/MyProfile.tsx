@@ -1,13 +1,11 @@
 import Sidebar from "./ui/SideBar";
 import Button from "./ui/Button";
 import Input from "./ui/Input";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
-import axios, { AxiosError } from "axios";
-import { UpdateProfileData } from "../interfaces/my-profile/UpdateProfileData";
+import { useApi } from "../hooks/useApi";
 import { UpdateProfileValidationErrors } from "../interfaces/my-profile/UpdateProfileValidationErrors";
-import { UpdateProfileResponse } from "../interfaces/my-profile/UpdateProfileResonse";
 import { updateProfile } from "../store/slices/authSlice";
 
 const MyProfile = () => {
@@ -18,58 +16,49 @@ const MyProfile = () => {
   const [about, setAbout] = useState(user.about ?? "");
   const [errors, setErrors] = useState<UpdateProfileValidationErrors>({});
   const [success, setSuccess] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+
+  const { data, loading, error, fetchData } = useApi(
+    {
+      url: "http://localhost:8000/my-profile/update",
+      method: "POST",
+      data: { name, email, about },
+    },
+    { manual: true }
+  );
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    setLoading(true);
     setErrors({});
     setSuccess(null);
+    await fetchData();
+  };
 
-    const data: UpdateProfileData = {
-      name,
-      email,
-      about,
-    };
-
-    try {
-      axios.defaults.withCredentials = true;
-      axios.defaults.withXSRFToken = true;
-      const response = await axios.post<UpdateProfileResponse>(
-        "http://localhost:8000/my-profile/update",
-        data
+  useEffect(() => {
+    if (data?.user) {
+      const user = data.user;
+      setSuccess("Profile updated successfully.");
+      dispatch(
+        updateProfile({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          about: user.about,
+        })
       );
 
-      if (response.status === 200) {
-        const user = response.data?.user;
-        setSuccess("Profile updated successfully.");
-        dispatch(
-          updateProfile({
-            id: user?.id,
-            name: user?.name,
-            email: user?.email,
-            about: user?.about,
-          })
-        );
-
-        setTimeout(() => {
-          setSuccess("");
-        }, 3000);
-      }
-    } catch (error) {
-      const axiosError = error as AxiosError<{
-        errors: UpdateProfileValidationErrors;
-      }>;
-      if (axiosError.response && axiosError.response.status === 422) {
-        setErrors(axiosError.response.data.errors);
-      } else {
-        console.error("Profile update failed:", axiosError.message);
-      }
-    } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setSuccess(null);
+      }, 3000);
     }
-  };
+  }, [data, dispatch]);
+
+  useEffect(() => {
+    if (error?.response?.status === 422) {
+      setErrors(error.response.data.errors);
+    } else if (error) {
+      console.error("Profile update failed:", error.message);
+    }
+  }, [error]);
 
   return (
     <div className="flex min-h-screen">
