@@ -41,9 +41,6 @@ const PostForm = ({
     };
 
     try {
-      axios.defaults.withCredentials = true;
-      axios.defaults.withXSRFToken = true;
-
       let response;
       if (isCreate) {
         response = await axios.post<CreatePostResponse>(

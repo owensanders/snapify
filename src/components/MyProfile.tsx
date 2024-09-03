@@ -9,6 +9,7 @@ import { UpdateProfileValidationErrors } from "../interfaces/my-profile/UpdatePr
 import { updateProfile } from "../store/slices/authSlice";
 import { UseApiErrorResponse } from "../interfaces/api/UseApiErrorResponse";
 import { UpdateProfileResponse } from "../interfaces/my-profile/UpdateProfileResonse";
+import { UpdateProfileData } from "../interfaces/my-profile/UpdateProfileData";
 
 const MyProfile = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -26,7 +27,7 @@ const MyProfile = () => {
     {
       url: "http://localhost:8000/my-profile/update",
       method: "POST",
-      data: { name, email, about },
+      data: { name, email, about } as UpdateProfileData,
     },
     { manual: true }
   );

@@ -12,8 +12,6 @@ const MyPosts = () => {
 
   const fetchPosts = useCallback(async () => {
     try {
-      axios.defaults.withCredentials = true;
-      axios.defaults.withXSRFToken = true;
       const response = await axios.get<{ posts: PostType[] }>(
         `http://localhost:8000/posts/user/${user.id}`
       );

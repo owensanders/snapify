@@ -14,6 +14,10 @@ import store from "./store";
 import UpdatePost from "./components/posts/UpdatePost";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MyFeed from "./components/MyFeed";
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
+axios.defaults.withXSRFToken = true;
 
 const router = createBrowserRouter([
   {

@@ -26,8 +26,6 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      axios.defaults.withCredentials = true;
-      axios.defaults.withXSRFToken = true;
       await axios.get("http://localhost:8000/sanctum/csrf-cookie");
 
       const data: RegisterData = {

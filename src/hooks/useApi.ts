@@ -6,7 +6,7 @@ export const useApi = <T = any, E = any>(
   config: AxiosRequestConfig,
   options: UseApiOptions<T> = {}
 ) => {
-  const { manual = false, initialData = null } = options;
+  const { manual = false, initialData = null, isAuthRequest = false } = options;
   const [data, setData] = useState<T | null>(initialData);
   const [loading, setLoading] = useState(!manual);
   const [error, setError] = useState<AxiosError<E> | null>(null);
@@ -14,9 +14,11 @@ export const useApi = <T = any, E = any>(
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
+
     try {
-      axios.defaults.withCredentials = true;
-      axios.defaults.withXSRFToken = true;
+      if (isAuthRequest) {
+        await axios.get("http://localhost:8000/sanctum/csrf-cookie");
+      }
 
       const response = await axios<T>(config);
       setData(response.data);
@@ -25,7 +27,7 @@ export const useApi = <T = any, E = any>(
     } finally {
       setLoading(false);
     }
-  }, [config]);
+  }, [config, isAuthRequest]);
 
   useEffect(() => {
     if (!manual) {
