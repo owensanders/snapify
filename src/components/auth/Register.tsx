@@ -1,8 +1,7 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
-import axios from "axios";
 import {
   RegisterValidationErrors,
   ErrorResponse,
@@ -12,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { login } from "../../store/slices/authSlice";
 import { LoginResponse } from "../../interfaces/auth/LoginResponse";
+import { useApi } from "../../hooks/useApi";
 
 const Register = () => {
   const [name, setName] = useState<string>("");
@@ -22,46 +22,51 @@ const Register = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
+  const {
+    data,
+    error,
+    fetchData: registerAttempt,
+    loading,
+  } = useApi<LoginResponse, ErrorResponse>(
+    {
+      url: "http://localhost:8000/register",
+      method: "post",
+      data: {
+        name,
+        email,
+        password,
+        password_confirmation: confirmPassword,
+      } as RegisterData,
+    },
+    { manual: true, isAuthRequest: true }
+  );
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    await registerAttempt();
+  };
 
-    try {
-      await axios.get("http://localhost:8000/sanctum/csrf-cookie");
-
-      const data: RegisterData = {
-        name: name,
-        email: email,
-        password: password,
-        password_confirmation: confirmPassword,
-      };
-
-      const response = await axios.post<LoginResponse>(
-        "http://localhost:8000/register",
-        data
+  useEffect(() => {
+    if (data) {
+      const user = data.user;
+      setErrors({});
+      dispatch(
+        login({
+          id: user?.id,
+          name: user?.name,
+          email: user?.email,
+          about: user?.about,
+        })
       );
-
-      if (response.status === 200) {
-        const user = response.data?.user;
-        setErrors({});
-        dispatch(
-          login({
-            id: user?.id,
-            name: user?.name,
-            email: user?.email,
-            about: user?.about,
-          })
-        );
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 422) {
-        const errorResponse: ErrorResponse = error.response.data;
-        setErrors(errorResponse.errors);
+      navigate("/dashboard");
+    } else if (error) {
+      if (error.response && error.response.status === 422) {
+        setErrors(error.response.data.errors);
       } else {
-        console.error("Registration failed:", error);
+        console.error("Registration failed:", error.message);
       }
     }
-  };
+  }, [data, error, dispatch, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-stone-100">
@@ -137,7 +142,7 @@ const Register = () => {
             />
           </div>
           <div className="flex flex-col md:flex-row justify-center items-center">
-            <Button>Register</Button>
+            <Button disabled={loading}>Register</Button>
             <Link to="/login">
               <p className="text-center text-blue-600 hover:text-blue-800 cursor-pointer">
                 Already have an account? Login here.

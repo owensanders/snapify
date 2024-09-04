@@ -1,14 +1,14 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
-import axios, { AxiosError } from "axios";
 import { LoginValidationErrors } from "../../interfaces/auth/LoginValidationErrors";
 import { LoginResponse } from "../../interfaces/auth/LoginResponse";
 import { LoginData } from "../../interfaces/auth/LoginData";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/slices/authSlice";
 import { AppDispatch } from "../../store";
+import { useApi } from "../../hooks/useApi";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
@@ -17,46 +17,51 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
+  const {
+    data,
+    error,
+    fetchData: loginAttempt,
+    loading,
+  } = useApi<LoginResponse, { errors: LoginValidationErrors }>(
+    {
+      url: "http://localhost:8000/login",
+      method: "post",
+      data: {
+        email,
+        password,
+      } as LoginData,
+    },
+    { manual: true, isAuthRequest: true }
+  );
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    await loginAttempt();
+  };
 
-    try {
-      axios.defaults.withCredentials = true;
-      axios.defaults.withXSRFToken = true;
-      await axios.get("http://localhost:8000/sanctum/csrf-cookie");
+  useEffect(() => {
+    if (data) {
+      const user = data.user;
 
-      const data: LoginData = {
-        email: email,
-        password: password,
-      };
-
-      const response = await axios.post<LoginResponse>(
-        "http://localhost:8000/login",
-        data
+      setErrors({});
+      dispatch(
+        login({
+          id: user?.id,
+          name: user?.name,
+          email: user?.email,
+          about: user?.about,
+        })
       );
 
-      if (response.status === 200) {
-        const user = response.data?.user;
-        setErrors({});
-        dispatch(
-          login({
-            id: user?.id,
-            name: user?.name,
-            email: user?.email,
-            about: user?.about,
-          })
-        );
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      const axiosError = error as AxiosError<{ errors: LoginValidationErrors }>;
-      if (axiosError.response && axiosError.response.status === 422) {
-        setErrors(axiosError.response.data.errors);
+      navigate("/dashboard");
+    } else if (error) {
+      if (error.response && error.response.status === 422) {
+        setErrors(error.response.data.errors);
       } else {
-        console.error("Login failed:", axiosError.message);
+        console.error("Login failed:", error.message);
       }
     }
-  };
+  }, [data, error, dispatch, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-stone-100">
@@ -96,7 +101,7 @@ const Login = () => {
             />
           </div>
           <div className="flex flex-col md:flex-row justify-center items-center">
-            <Button>Login</Button>
+            <Button disabled={loading}>Login</Button>
             <Link to="/register">
               <p className="text-center text-blue-600 hover:text-blue-800 cursor-pointer">
                 Don't have an account? Sign up here.
