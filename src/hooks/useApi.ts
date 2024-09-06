@@ -17,7 +17,7 @@ export const useApi = <T = any, E = any>(
       url: config.url,
       method: config.method,
       headers: config.headers,
-      data: JSON.stringify(config.data),
+      data: config.data,
     }),
     [config.url, config.method, config.headers, config.data]
   );
