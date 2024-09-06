@@ -12,12 +12,13 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { logout } from "../../store/slices/authSlice";
+import {FormEvent} from "react";
 
 const Sidebar = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const handleLogout = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogout = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const response = await axios.post(
