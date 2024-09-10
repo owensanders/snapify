@@ -1,67 +1,48 @@
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { LoginValidationErrors } from "../../interfaces/auth/LoginValidationErrors";
-import { LoginResponse } from "../../interfaces/auth/LoginResponse";
 import { LoginData } from "../../interfaces/auth/LoginData";
+import { LoginUseCase } from "../../useCases/LoginUseCase";
+import { AuthRepository } from "../../repositories/AuthRepository";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/slices/authSlice";
 import { AppDispatch } from "../../store";
-import { useApi } from "../../hooks/useApi";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errors, setErrors] = useState<LoginValidationErrors>({});
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
-  const {
-    data,
-    error,
-    fetchData: loginAttempt,
-    loading,
-  } = useApi<LoginResponse, { errors: LoginValidationErrors }>(
-    {
-      url: "http://localhost:8000/login",
-      method: "post",
-      data: {
-        email,
-        password,
-      } as LoginData,
-    },
-    { manual: true, isAuthRequest: true }
-  );
+  const loginUseCase = new LoginUseCase(new AuthRepository());
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await loginAttempt();
-  };
+    setLoading(true);
 
-  useEffect(() => {
-    if (data) {
-      const user = data.user;
+    const loginData: LoginData = { email, password };
+    const result = await loginUseCase.execute(loginData);
 
-      setErrors({});
+    if ("errors" in result) {
+      setErrors(result.errors);
+      setLoading(false);
+    } else {
       dispatch(
         login({
-          id: user?.id,
-          name: user?.name,
-          email: user?.email,
-          about: user?.about,
+          id: result.user?.id,
+          name: result.user?.name,
+          email: result.user?.email,
+          about: result.user?.about,
         })
       );
-
+      setLoading(false);
       navigate("/dashboard");
-    } else if (error) {
-      if (error.response && error.response.status === 422) {
-        setErrors(error.response.data.errors);
-      } else {
-        console.error("Login failed:", error.message);
-      }
     }
-  }, [data, error, dispatch, navigate]);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-stone-100">

@@ -1,17 +1,13 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
-import {
-  RegisterValidationErrors,
-  ErrorResponse,
-} from "../../interfaces/auth/RegisterValidationErrors";
-import { RegisterData } from "../../interfaces/auth/RegisterData";
+import { RegisterValidationErrors } from "../../interfaces/auth/RegisterValidationErrors";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { login } from "../../store/slices/authSlice";
-import { LoginResponse } from "../../interfaces/auth/LoginResponse";
-import { useApi } from "../../hooks/useApi";
+import { RegisterUseCase } from "../../useCases/RegisterUseCase";
+import { AuthRepository } from "../../repositories/AuthRepository";
 
 const Register = () => {
   const [name, setName] = useState<string>("");
@@ -19,37 +15,31 @@ const Register = () => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [errors, setErrors] = useState<RegisterValidationErrors>({});
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
-  const {
-    data,
-    error,
-    fetchData: registerAttempt,
-    loading,
-  } = useApi<LoginResponse, ErrorResponse>(
-    {
-      url: "http://localhost:8000/register",
-      method: "post",
-      data: {
-        name,
-        email,
-        password,
-        password_confirmation: confirmPassword,
-      } as RegisterData,
-    },
-    { manual: true, isAuthRequest: true }
-  );
+  const registerUseCase = new RegisterUseCase(new AuthRepository());
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    await registerAttempt();
-  };
+    setLoading(true);
 
-  useEffect(() => {
-    if (data) {
-      const user = data.user;
+    const registerData = {
+      name,
+      email,
+      password,
+      password_confirmation: confirmPassword,
+    };
+
+    const result = await registerUseCase.execute(registerData);
+
+    if ("errors" in result) {
+      setErrors(result.errors);
+    } else {
+      const user = result.user;
       setErrors({});
+
       dispatch(
         login({
           id: user?.id,
@@ -58,15 +48,12 @@ const Register = () => {
           about: user?.about,
         })
       );
+
       navigate("/dashboard");
-    } else if (error) {
-      if (error.response && error.response.status === 422) {
-        setErrors(error.response.data.errors);
-      } else {
-        console.error("Registration failed:", error.message);
-      }
     }
-  }, [data, error, dispatch, navigate]);
+
+    setLoading(false);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-stone-100">
