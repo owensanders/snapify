@@ -8,6 +8,7 @@ import { AppDispatch } from "../../store";
 import { login } from "../../store/slices/authSlice";
 import { RegisterUseCase } from "../../useCases/RegisterUseCase";
 import { AuthRepository } from "../../repositories/AuthRepository";
+import { RegisterData } from "../../interfaces/auth/RegisterData";
 
 const Register = () => {
   const [name, setName] = useState<string>("");
@@ -25,7 +26,7 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
 
-    const registerData = {
+    const registerData: RegisterData = {
       name,
       email,
       password,
