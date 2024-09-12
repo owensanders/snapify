@@ -3,30 +3,38 @@ import Card from "./ui/Card";
 import Post from "./posts/Post";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { DashboardData } from "../interfaces/dashboard/DashboardData";
-import { useApi } from "../hooks/useApi";
+import { DashboardRepository } from "../repositories/DashboardRepository";
+import { GetDashboardDataUseCase } from "../useCases/GetDashboardDataUseCase";
 
 const Dashboard = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
     null
   );
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const { data, loading, error, fetchData } = useApi<DashboardData>(
-    { url: "http://localhost:8000/dashboard", method: "get" },
-    { manual: true }
-  );
+  const getDashboardDataUseCase = useMemo(() => {
+    return new GetDashboardDataUseCase(new DashboardRepository());
+  }, []);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  useEffect(() => {
-    if (data) {
+  const fetchDashboardData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await getDashboardDataUseCase.execute();
       setDashboardData(data);
+    } catch (err) {
+      setError("Error loading dashboard data.");
+    } finally {
+      setLoading(false);
     }
-  }, [data]);
+  }, [getDashboardDataUseCase]);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   return (
     <div className="flex min-h-screen">
@@ -37,7 +45,7 @@ const Dashboard = () => {
           <h1 className="text-xl font-bold mt-3">Welcome, {user.name}!</h1>
 
           {loading && <p>Loading...</p>}
-          {error && <p>Error loading dashboard: {error.message}</p>}
+          {error && <p>{error}</p>}
 
           {dashboardData && (
             <>
@@ -66,7 +74,7 @@ const Dashboard = () => {
                       body={dashboardData?.most_recent_post?.body}
                       likes={dashboardData?.most_recent_post?.likes}
                       comments={dashboardData?.most_recent_post?.comments}
-                      onDelete={fetchData}
+                      onDelete={fetchDashboardData}
                     />
                   </div>
                 )}
@@ -81,7 +89,7 @@ const Dashboard = () => {
                       body={dashboardData?.post_with_most_likes?.body}
                       likes={dashboardData?.post_with_most_likes?.likes}
                       comments={dashboardData?.post_with_most_likes?.comments}
-                      onDelete={fetchData}
+                      onDelete={fetchDashboardData}
                     />
                   </div>
                 )}
