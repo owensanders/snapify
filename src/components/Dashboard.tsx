@@ -6,7 +6,7 @@ import { RootState } from "../store";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { DashboardData } from "../interfaces/dashboard/DashboardData";
 import { DashboardRepository } from "../repositories/DashboardRepository";
-import { GetDashboardDataUseCase } from "../useCases/GetDashboardDataUseCase";
+import { GetDashboardDataUseCase } from "../use-cases/GetDashboardDataUseCase";
 
 const Dashboard = () => {
   const user = useSelector((state: RootState) => state.auth.user);

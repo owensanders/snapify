@@ -4,7 +4,7 @@ import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { LoginValidationErrors } from "../../interfaces/auth/LoginValidationErrors";
 import { LoginData } from "../../interfaces/auth/LoginData";
-import { LoginUseCase } from "../../useCases/LoginUseCase";
+import { LoginUseCase } from "../../use-cases/LoginUseCase";
 import { AuthRepository } from "../../repositories/AuthRepository";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/slices/authSlice";

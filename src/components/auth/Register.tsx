@@ -6,7 +6,7 @@ import { RegisterValidationErrors } from "../../interfaces/auth/RegisterValidati
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { login } from "../../store/slices/authSlice";
-import { RegisterUseCase } from "../../useCases/RegisterUseCase";
+import { RegisterUseCase } from "../../use-cases/RegisterUseCase";
 import { AuthRepository } from "../../repositories/AuthRepository";
 import { RegisterData } from "../../interfaces/auth/RegisterData";
 
