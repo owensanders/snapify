@@ -1,15 +1,13 @@
 import Sidebar from "./ui/SideBar";
 import Button from "./ui/Button";
 import Input from "./ui/Input";
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
-import { useApi } from "../hooks/useApi";
 import { UpdateProfileValidationErrors } from "../interfaces/my-profile/UpdateProfileValidationErrors";
 import { updateProfile } from "../store/slices/authSlice";
-import { UseApiErrorResponse } from "../interfaces/api/UseApiErrorResponse";
-import { UpdateProfileResponse } from "../interfaces/my-profile/UpdateProfileResonse";
-import { UpdateProfileData } from "../interfaces/my-profile/UpdateProfileData";
+import { UserRepository } from "../repositories/UserRepository";
+import { UpdateProfileUseCase } from "../use-cases/UpdateProfileUseCase";
 
 const MyProfile = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -19,52 +17,47 @@ const MyProfile = () => {
   const [about, setAbout] = useState(user.about ?? "");
   const [errors, setErrors] = useState<UpdateProfileValidationErrors>({});
   const [success, setSuccess] = useState<string | null>(null);
-
-  const { data, loading, error, fetchData } = useApi<
-    UpdateProfileResponse,
-    UseApiErrorResponse
-  >(
-    {
-      url: "http://localhost:8000/my-profile/update",
-      method: "POST",
-      data: { name, email, about } as UpdateProfileData,
-    },
-    { manual: true }
-  );
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
     setSuccess(null);
-    await fetchData();
-  };
+    setLoading(true);
 
-  useEffect(() => {
-    if (data?.user) {
-      const user = data.user;
-      setSuccess("Profile updated successfully.");
+    const userRepository = new UserRepository();
+    const updateProfileUseCase = new UpdateProfileUseCase(userRepository);
+
+    try {
+      const response = await updateProfileUseCase.execute({
+        name,
+        email,
+        about,
+      });
+
       dispatch(
         updateProfile({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          about: user.about,
+          id: response?.user?.id,
+          name: response?.user?.name,
+          email: response?.user?.email,
+          about: response?.user?.about,
         })
       );
+      setSuccess("Profile updated successfully.");
 
       setTimeout(() => {
         setSuccess(null);
       }, 3000);
+    } catch (error: any) {
+      if (error.errors) {
+        setErrors(error.errors);
+      } else {
+        console.error("Profile update failed:", error);
+      }
+    } finally {
+      setLoading(false);
     }
-  }, [data, dispatch]);
-
-  useEffect(() => {
-    if (error?.response?.status === 422) {
-      setErrors(error.response.data.errors);
-    } else if (error) {
-      console.error("Profile update failed:", error.message);
-    }
-  }, [error]);
+  };
 
   return (
     <div className="flex min-h-screen">
