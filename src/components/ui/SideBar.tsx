@@ -8,29 +8,24 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { logout } from "../../store/slices/authSlice";
-import {FormEvent} from "react";
+import { FormEvent } from "react";
+import { LogoutUseCase } from "../../use-cases/LogoutUseCase";
+import { AuthRepository } from "../../repositories/AuthRepository";
 
 const Sidebar = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const logoutUseCase = new LogoutUseCase(new AuthRepository());
 
   const handleLogout = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:8000/logout",
-        {},
-        { withCredentials: true }
-      );
-
-      if (response.status === 200) {
-        dispatch(logout());
-        navigate("/login");
-      }
+      await logoutUseCase.execute();
+      dispatch(logout());
+      navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -42,13 +37,6 @@ const Sidebar = () => {
       style={{ width: "max-content" }}
     >
       <ul className="text-white ml-2">
-        <li className="mb-10 mt-5 text-center">
-          <img
-            alt=""
-            src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-            className="inline-block h-12 w-12 rounded-full ring-2 ring-white"
-          />
-        </li>
         <li className="my-10">
           <Link to="/dashboard" className="flex items-center">
             <FontAwesomeIcon icon={faHome} className="mr-4 min-w-[20px]" />

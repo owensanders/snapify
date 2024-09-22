@@ -1,31 +1,39 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../ui/SideBar";
 import Post from "./Post";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { PostType } from "../../interfaces/posts/PostType";
-import { useApi } from "../../hooks/useApi";
+import { PostRepository } from "../../repositories/PostRepository";
+import { useCallback } from "react";
+import { GetUserPostsUseCase } from "../../use-cases/GetUserPostsUseCase";
 
 const MyPosts = () => {
   const user = useSelector((state: RootState) => state.auth.user);
-  const {
-    data,
-    error,
-    fetchData: fetchPosts,
-    loading,
-  } = useApi<{ posts: PostType[] }>(
-    {
-      url: `http://localhost:8000/posts/user/${user?.id}`,
-      method: "GET",
-    },
-    { manual: true }
-  );
+  const [posts, setPosts] = useState<PostType[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchUserPosts = useCallback(async () => {
+    if (!user?.id) return;
+
+    const postRepository = new PostRepository();
+    const getUserPostsUseCase = new GetUserPostsUseCase(postRepository);
+
+    try {
+      setLoading(true);
+      const userPosts = await getUserPostsUseCase.execute(user.id);
+      setPosts(userPosts);
+    } catch (err: any) {
+      setError(err.message || "Error fetching posts.");
+    } finally {
+      setLoading(false);
+    }
+  }, [user?.id]);
 
   useEffect(() => {
-    if (user?.id) {
-      fetchPosts();
-    }
-  }, [fetchPosts, user?.id]);
+    fetchUserPosts();
+  }, [fetchUserPosts]);
 
   return (
     <div className="flex min-h-screen">
@@ -35,12 +43,10 @@ const MyPosts = () => {
           <h1 className="text-3xl font-bold mb-6">My Posts</h1>
           {loading && <p>Loading posts...</p>}
           {error && (
-            <p className="text-red-600">
-              Error fetching posts: {error.message}
-            </p>
+            <p className="text-red-600">Error fetching posts: {error}</p>
           )}
-          {data?.posts?.length
-            ? data.posts.map((post) => (
+          {posts.length
+            ? posts.map((post) => (
                 <Post
                   key={post.id}
                   id={post.id}
@@ -49,7 +55,7 @@ const MyPosts = () => {
                   likes={post.likes || []}
                   comments={post.comments || []}
                   classes="mt-5"
-                  onDelete={fetchPosts}
+                  onDelete={fetchUserPosts}
                 />
               ))
             : !loading && <p>No posts available.</p>}

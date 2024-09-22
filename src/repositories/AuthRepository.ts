@@ -40,4 +40,16 @@ export class AuthRepository implements AuthRepositoryContract {
       throw error;
     }
   }
+
+  async logout(): Promise<void> {
+    try {
+      const response = await axios.post("http://localhost:8000/logout");
+      if (response.status !== 200) {
+        throw new Error("Logout failed.");
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+      throw error;
+    }
+  }
 }

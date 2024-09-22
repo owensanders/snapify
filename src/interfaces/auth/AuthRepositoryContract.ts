@@ -8,6 +8,6 @@ export interface AuthRepositoryContract {
   login(
     data: LoginData
   ): Promise<LoginResponse | { errors: LoginValidationErrors }>;
-
   register(data: RegisterData): Promise<LoginResponse | ErrorResponse>;
+  logout(): Promise<void>;
 }
