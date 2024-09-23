@@ -2,7 +2,7 @@ import axios, { AxiosError } from "axios";
 import { UpdateProfileData } from "../interfaces/my-profile/UpdateProfileData";
 import { UpdateProfileResponse } from "../interfaces/my-profile/UpdateProfileResonse";
 import { UseApiErrorResponse } from "../interfaces/api/UseApiErrorResponse";
-import { UserProfileContract } from "../interfaces/my-profile/UserProfileContract";
+import { UserProfileContract } from "../interfaces/my-profile/UserRepositoryContract";
 
 export class UserRepository implements UserProfileContract {
   async updateProfile(data: UpdateProfileData): Promise<UpdateProfileResponse> {

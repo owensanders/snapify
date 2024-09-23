@@ -1,6 +1,6 @@
 import { UpdateProfileData } from "../interfaces/my-profile/UpdateProfileData";
 import { UpdateProfileResponse } from "../interfaces/my-profile/UpdateProfileResonse";
-import { UserProfileContract } from "../interfaces/my-profile/UserProfileContract";
+import { UserProfileContract } from "../interfaces/my-profile/UserRepositoryContract";
 
 export class UpdateProfileUseCase {
   constructor(private userRepository: UserProfileContract) {}

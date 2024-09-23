@@ -6,7 +6,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PostProps } from "../../interfaces/props/PostProps";
-import { useApi } from "../../hooks/useApi";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -14,6 +13,9 @@ import Button from "../ui/Button";
 import { FormEvent, useState } from "react";
 import { CommentValidationErrors } from "../../interfaces/posts/CommentValidationErrors";
 import { CommentData } from "../../interfaces/posts/CommentData";
+import { useDeletePostUseCase } from "../../hooks/useDeletePost";
+import { useLikePostUseCase } from "../../hooks/useLikePost";
+import { useCommentPostUseCase } from "../../hooks/useCommentPost";
 
 const Post = ({
   id,
@@ -28,77 +30,57 @@ const Post = ({
 }: PostProps) => {
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.auth.user);
-  const [comment, setComment] = useState<string>(""); // useState for comment
+  const [comment, setComment] = useState<string>("");
   const [errors, setErrors] = useState<CommentValidationErrors>({});
   const hasUserLiked = (likes || []).some((like) => like.user_id === user.id);
 
-  const { fetchData: deletePost } = useApi<{ message: string }>(
-    {
-      url: `http://localhost:8000/posts/${id}`,
-      method: "DELETE",
-    },
-    { manual: true }
-  );
+  const deletePostUseCase = useDeletePostUseCase();
+  const likePostUseCase = useLikePostUseCase();
+  const commentPostUseCase = useCommentPostUseCase();
 
   const handleDelete = async () => {
-    await deletePost();
-
-    if (!onDelete) {
-      navigate("/");
-    } else {
-      onDelete();
+    try {
+      await deletePostUseCase.execute(id);
+      if (!onDelete) {
+        navigate("/");
+      } else {
+        onDelete();
+      }
+    } catch (error) {
+      console.error("Failed to delete post:", error);
     }
   };
-
-  const { fetchData: likePost } = useApi<{ message: string }>(
-    {
-      url: `http://localhost:8000/posts/${id}/like`,
-      method: "POST",
-    },
-    { manual: true }
-  );
 
   const handleLike = async () => {
-    await likePost();
-
-    if (!onLike) {
-      navigate("/");
-    } else {
-      onLike();
+    try {
+      await likePostUseCase.execute(id);
+      if (!onLike) {
+        navigate("/");
+      } else {
+        onLike();
+      }
+    } catch (error) {
+      console.error("Failed to like post:", error);
     }
   };
-
-  const { fetchData: commentPost, error: commentError } = useApi<
-    { message: string },
-    { errors: CommentValidationErrors }
-  >(
-    {
-      url: "http://localhost:8000/posts/comment",
-      method: "POST",
-      data: { id, comment },
-    },
-    { manual: true }
-  );
 
   const handleComment = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
-    await commentPost();
-
-    if (!commentError) {
+    try {
+      await commentPostUseCase.execute(id, comment);
       setComment("");
       if (!onLike) {
         navigate("/");
       } else {
         onLike();
       }
-    } else if (commentError?.response?.status === 422) {
-      setErrors(commentError.response.data.errors);
-    } else {
-      console.log(
-        "There was an error commenting on a post:",
-        commentError.message
-      );
+    } catch (error: any) {
+      if (error?.response?.status === 422) {
+        setErrors(error.response.data.errors);
+      } else {
+        console.error("Failed to comment on post:", error);
+      }
     }
   };
 
