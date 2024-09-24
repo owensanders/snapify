@@ -17,8 +17,7 @@ const MyPosts = () => {
   const fetchUserPosts = useCallback(async () => {
     if (!user?.id) return;
 
-    const postRepository = new PostRepository();
-    const getUserPostsUseCase = new GetUserPostsUseCase(postRepository);
+    const getUserPostsUseCase = new GetUserPostsUseCase(new PostRepository());
 
     try {
       setLoading(true);

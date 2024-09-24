@@ -1,13 +1,13 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useApi } from "../../hooks/useApi";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
-import { CreatePostValidationErrors } from "../../interfaces/posts/CreatePostValidationErrors";
-import { CreatePostData } from "../../interfaces/posts/CreatePostData";
-import { CreatePostResponse } from "../../interfaces/posts/CreatePostResponse";
 import Sidebar from "../ui/SideBar";
+import { CreatePostValidationErrors } from "../../interfaces/posts/CreatePostValidationErrors";
+import { PostRepository } from "../../repositories/PostRepository";
 import { PostType } from "../../interfaces/posts/PostType";
+import { CreatePostUseCase } from "../../use-cases/CreatePostUseCase";
+import { UpdatePostUseCase } from "../../use-cases/UpdatePostUseCase";
 
 const PostForm = ({
   post,
@@ -18,60 +18,43 @@ const PostForm = ({
   isCreate: boolean;
   message: string;
 }) => {
-  const titleInitialValue = isCreate ? "" : post?.title;
-  const bodyInitialValue = isCreate ? "" : post?.body;
-  const [title, setTitle] = useState<string>(titleInitialValue || "");
-  const [body, setBody] = useState<string>(bodyInitialValue || "");
+  const [title, setTitle] = useState<string>(isCreate ? "" : post?.title || "");
+  const [body, setBody] = useState<string>(isCreate ? "" : post?.body || "");
   const [errors, setErrors] = useState<CreatePostValidationErrors>({});
   const [success, setSuccess] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const {
-    data,
-    error,
-    fetchData: submitPost,
-    loading,
-  } = useApi<CreatePostResponse, { errors: CreatePostValidationErrors }>(
-    {
-      url: isCreate
-        ? "http://localhost:8000/posts/create"
-        : "http://localhost:8000/posts/update",
-      method: isCreate ? "post" : "put",
-      data: {
-        id: post?.id,
-        title,
-        body,
-      } as CreatePostData,
-    },
-    { manual: true }
-  );
+  const postRepository = new PostRepository();
+  const createPostUseCase = new CreatePostUseCase(postRepository);
+  const updatePostUseCase = new UpdatePostUseCase(postRepository);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
     setSuccess(null);
 
-    await submitPost();
-  };
+    try {
+      if (isCreate) {
+        await createPostUseCase.execute({ title, body });
+        setSuccess(message);
+      } else {
+        await updatePostUseCase.execute({ id: post?.id!, title, body });
+        setSuccess(message);
+      }
 
-  useEffect(() => {
-    if (data) {
-      setSuccess(message);
       setTitle("");
       setBody("");
       setTimeout(() => {
         navigate("/my-posts");
       }, 2000);
+    } catch (error: any) {
+      if (error.response?.status === 422) {
+        setErrors(error.response.data.errors);
+      } else {
+        console.error("Post submission failed:", error.message);
+      }
     }
-  }, [data, message, navigate]);
-
-  useEffect(() => {
-    if (error?.response?.status === 422) {
-      setErrors(error.response.data.errors);
-    } else if (error) {
-      console.error("Post create or update failed:", error.message);
-    }
-  }, [error]);
+  };
 
   return (
     <div className="flex min-h-screen">
@@ -123,14 +106,8 @@ const PostForm = ({
                 />
               </div>
               <div className="flex flex-col md:flex-row justify-start items-center">
-                <Button type="submit" disabled={loading}>
-                  {loading
-                    ? isCreate
-                      ? "Creating..."
-                      : "Updating..."
-                    : isCreate
-                    ? "Create Post"
-                    : "Update Post"}
+                <Button type="submit">
+                  {isCreate ? "Create Post" : "Update Post"}
                 </Button>
               </div>
             </form>

@@ -1,6 +1,8 @@
 import axios, { AxiosError } from "axios";
 import { PostType } from "../interfaces/posts/PostType";
 import { PostRepositoryContract } from "../interfaces/posts/PostRepositoryContract";
+import { CreatePostData } from "../interfaces/posts/CreatePostData";
+import { CreatePostResponse } from "../interfaces/posts/CreatePostResponse";
 
 export class PostRepository implements PostRepositoryContract {
   async getUserPosts(userId: number): Promise<PostType[]> {
@@ -31,5 +33,21 @@ export class PostRepository implements PostRepositoryContract {
       id: postId,
       comment,
     });
+  }
+
+  async createPost(data: CreatePostData): Promise<CreatePostResponse> {
+    const response = await axios.post<CreatePostResponse>(
+      "http://localhost:8000/posts/create",
+      data
+    );
+    return response.data;
+  }
+
+  async updatePost(data: CreatePostData): Promise<CreatePostResponse> {
+    const response = await axios.put<CreatePostResponse>(
+      "http://localhost:8000/posts/update",
+      data
+    );
+    return response.data;
   }
 }
