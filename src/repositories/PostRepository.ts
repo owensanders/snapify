@@ -5,6 +5,13 @@ import { CreatePostData } from "../interfaces/posts/CreatePostData";
 import { CreatePostResponse } from "../interfaces/posts/CreatePostResponse";
 
 export class PostRepository implements PostRepositoryContract {
+  async getPostById(id: string): Promise<PostType> {
+    const response = await axios.get<{ post: PostType }>(
+      `http://localhost:8000/posts/${id}`
+    );
+    return response.data.post;
+  }
+
   async getUserPosts(userId: number): Promise<PostType[]> {
     try {
       const response = await axios.get<{ posts: PostType[] }>(

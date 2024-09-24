@@ -9,4 +9,5 @@ export interface PostRepositoryContract {
   commentPost(postId: number, comment: string): Promise<void>;
   createPost(data: CreatePostData): Promise<CreatePostResponse>;
   updatePost(data: CreatePostData): Promise<CreatePostResponse>;
+  getPostById(id: string): Promise<PostType>;
 }
