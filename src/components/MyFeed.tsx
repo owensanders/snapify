@@ -18,7 +18,8 @@ const MyFeed = () => {
     setLoading(true);
     try {
       const data = await getMyFeedPostsUseCase.execute();
-      setPosts(data.posts);
+      const posts = Object.values(data.posts);
+      setPosts(posts);
     } catch (err) {
       setError("Error fetching posts.");
     } finally {
