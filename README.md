@@ -1,5 +1,5 @@
 <h1>Blogify Front End</h1>
-<p>This is the front-end of my Blogify project, which uses React, TypeScript, and TailwindCSS. <b>It is still a work in progress...</b></p>
+<p>This is the front-end of my Blogify project, which uses React, TypeScript, TailwindCSS and some aspects of clean code architecture.</p>
 <p>To set up and run the project, follow these steps:</p>
 <ol>
   <li>Start the Blogify back-end server first. Ensure you have the back-end repository set up and running. For detailed instructions, refer to the Blogify Back End README.</li>
