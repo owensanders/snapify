@@ -7,7 +7,6 @@ import { FeedRepository } from "../repositories/FeedRepository";
 
 const MyFeed = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const getMyFeedPostsUseCase = useMemo(() => {
@@ -15,15 +14,12 @@ const MyFeed = () => {
   }, []);
 
   const fetchPosts = useCallback(async () => {
-    setLoading(true);
     try {
       const data = await getMyFeedPostsUseCase.execute();
       const posts = Object.values(data.posts);
       setPosts(posts);
     } catch (err) {
       setError("Error fetching posts.");
-    } finally {
-      setLoading(false);
     }
   }, [getMyFeedPostsUseCase]);
 
@@ -37,7 +33,6 @@ const MyFeed = () => {
       <div className="flex-grow bg-gray-100 p-6">
         <div className="bg-white shadow-xl border m-6 p-6">
           <h1 className="text-3xl font-bold">My Feed</h1>
-          {loading && <p className="mt-10">Loading posts...</p>}
           {error && <p className="mt-10 text-red-600">{error}</p>}
           {posts.length
             ? posts.map((post) => (
@@ -53,7 +48,7 @@ const MyFeed = () => {
                   onLike={fetchPosts}
                 />
               ))
-            : !loading && <p className="mt-10">No posts available.</p>}
+            : <p className="mt-10">No posts available.</p>}
         </div>
       </div>
     </div>
