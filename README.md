@@ -1,4 +1,5 @@
 <h1>Blogify Front End</h1>
+<p>Blogify is a simple blog platform, where you can create, edit and delete posts. You can also view other users posts and like and comment on them.</p>
 <p>This is the front-end of my Blogify project, which uses React, TypeScript, TailwindCSS and some aspects of clean code architecture.</p>
 <p>To set up and run the project, follow these steps:</p>
 <ol>
